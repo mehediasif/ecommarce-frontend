@@ -1,3 +1,11 @@
+import Header from "@/componenets/Header";
+
+
+
 export default function HomePage(){
-  return(<div>Hellow World!</div>)
+  return(
+    <div>
+    <Header />
+    </div>
+    );
 }
