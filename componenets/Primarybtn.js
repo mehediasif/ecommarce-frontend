@@ -1,6 +1,6 @@
 import styled, {css} from "styled-components";
 
-const StyledButton = styled.button`
+export const ButtonStyle = css`
     border:0;
     padding:5px 15px;
     border-radius: 10px;
@@ -8,6 +8,7 @@ const StyledButton = styled.button`
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    text-decoration: none;
     svg{
         height: 26px;
         margin-right: 5px;
@@ -30,7 +31,14 @@ const StyledButton = styled.button`
         font-size: 1.2rem;
         padding:8px 15px;
     `}
+    ${props => props.size === 'm' && css`
+        font-size: 1 rem;
+        padding:8px 15px;
+    `}
+`;
 
+const StyledButton = styled.button`
+    ${ButtonStyle}
 `;
 export default function Primarybtn({children, ...rest}){
     return(<StyledButton {...rest}>{children}</StyledButton>)
