@@ -2,7 +2,7 @@ import Featured from "@/componenets/Featured";
 import Header from "@/componenets/Header";
 import NewProducts from "@/componenets/NewProducts";
 import { mongooseConnect } from "@/lib/mongoose";
-import { Product } from "@/models/product";
+import { Product } from "@/models/Product";
 
 
 export default function HomePage({featuredProduct,newProducts}){
@@ -13,13 +13,13 @@ export default function HomePage({featuredProduct,newProducts}){
     <div>
       <Header />
       <Featured featuredProduct={featuredProduct}/>
-      <NewProducts />
+      <NewProducts products = {newProducts}/>
     </div>
     );
 }
 
 export async function getServerSideProps(){
-  const featuredProductID = '6459a810b338bd3a66239fb6';
+  const featuredProductID = '647c0ddd2201dafd8a7c31ea';
   await mongooseConnect();
   const featuredProduct = await Product.findById(featuredProductID);
   const newProducts = await Product.find({}, null, {sort: {'_id':-1}, limit:10});

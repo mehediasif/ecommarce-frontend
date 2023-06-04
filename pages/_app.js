@@ -3,6 +3,7 @@ import '@/styles/globals.css'
 
 const GlobalStyles = createGlobalStyle`
   body{
+    background-color: #e0e0e9;
     padding:0;
     margin:0;
     font-family: 'Monoton', cursive;
