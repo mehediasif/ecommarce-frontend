@@ -10,9 +10,10 @@ const StyledLink = styled(Link)`
     align-items: center;
     gap: 10px;
     text-decoration: none;
-    background-color: #Afcaaa;
-    color:#00f;
+    background-color: transparent;
+    color: white;
     border: 1px solid #2376F6;
+    box-shadow: 2px 2px teal;
     font-family: 'Monoton', cursive;
     font-weight: normal;
     font-size: 1 rem;
