@@ -242,7 +242,7 @@ export default function CartPage(){
                             value={country}
                             onChange={ev => setCountry(ev.target.value)} 
                             />
-                            
+                            <input type={"hidden"} name={"products"} value={cartItems.join(',')} />
                             <Primarybtn black outline size={'l'} block type="submit">Continue to payment</Primarybtn>
                         </form>
                     </Box>
