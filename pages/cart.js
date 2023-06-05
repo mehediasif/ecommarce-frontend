@@ -3,6 +3,7 @@ import Center from "@/componenets/Center";
 import Header from "@/componenets/Header";
 import Primarybtn from "@/componenets/Primarybtn";
 import Table from "@/componenets/Table";
+import Input from "@/componenets/Input";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import styled, {css} from "styled-components";
@@ -77,15 +78,30 @@ const ProductPriceCell = styled.div`
     box-shadow: 1px 4px 1px #0e0ffF;
 `;
 
+const CityHolder = styled.div`
+    display: flex;
+    gap: 5px;
+`;
+
 export default function CartPage(){
     const {cartItems,addProduct,removeProduct} = useContext(CartContext);
     const [productInfo, setProductInfo] = useState([]);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [city, setCity] = useState('');
+    const [postalCode, setpostalCode] = useState('');
+    const [firstAddressLine, setFirstAddressLine] = useState('');
+    const [secondAddressLine, setSecondAddressLine] = useState('');
+    const [country, setCountry] = useState('');
+
     useEffect(() => {
         if (cartItems.length > 0){
             axios.post('/api/cart', {ids:cartItems})
             .then(response =>{
                 setProductInfo(response.data);
             })
+        }else{
+            setProductInfo([]);
         }
     }, [cartItems]);
     function moreOfthisProduct(id){
@@ -168,10 +184,67 @@ export default function CartPage(){
 
                 {!!cartItems?.length && (
                     <Box>
-                    <Title>Order Information</Title>
-                    <input type={"text"} placeholder="Address Line1"></input>
-                    <input type={"text"} placeholder="Address Line1"></input>
-                    <Primarybtn black outline size={'l'} block>Continue to payment</Primarybtn>
+                        <Title>Order Information</Title>
+                        <form method="post" action="/api/checkout">
+                            <Input 
+                            type={"text"} 
+                            placeholder="Name"
+                            name="name" 
+                            value={name}
+                            onChange={ev => setName(ev.target.value)} 
+                            />
+
+                            <Input 
+                            type={"text"} 
+                            placeholder="Email" 
+                            name="email"
+                            value={email}
+                            onChange={ev => setEmail(ev.target.value)} 
+                            />
+
+                            <CityHolder>
+                                <Input 
+                                type={"text"} 
+                                placeholder="City" 
+                                name="city"
+                                value={city}
+                                onChange={ev => setCity(ev.target.value)} 
+                                />
+                                <Input 
+                                type={"text"} 
+                                placeholder="Postal Code" 
+                                name="postalCode"
+                                value={postalCode}
+                                onChange={ev => setpostalCode(ev.target.value)} 
+                                />
+                            </CityHolder>
+
+                            <Input 
+                            type={"text"} 
+                            placeholder="Street Address Line1" 
+                            name="firstAddressLine" 
+                            value={firstAddressLine}
+                            onChange={ev => setFirstAddressLine(ev.target.value)} 
+                            />
+
+                            <Input 
+                            type={"text"} 
+                            placeholder="Street Address Line2" 
+                            name="secondAddressLine"
+                            value={secondAddressLine}
+                            onChange={ev => setSecondAddressLine(ev.target.value)} 
+                            />
+
+                            <Input 
+                            type={"text"} 
+                            placeholder="Country" 
+                            name="country"
+                            value={country}
+                            onChange={ev => setCountry(ev.target.value)} 
+                            />
+                            
+                            <Primarybtn black outline size={'l'} block type="submit">Continue to payment</Primarybtn>
+                        </form>
                     </Box>
                 )}
             </ColumnsWrapper>
