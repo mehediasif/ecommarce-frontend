@@ -10,11 +10,15 @@ const ProductsGrid= styled.div`
 `;
 
 const Title = styled.h3`
+    margin: 10px 0 10px;
     font-family: 'Syne Mono', monospace;
     font-weight: normal;
     font-size: 2rem;
-    color: black;
-    margin: 10px 0 10px;
+    background: linear-gradient(to right, rgb(300, 00, 00), rgb(0, 7, 277));
+    background-size: cover;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 `;
 
 export default function NewProducts({products}){

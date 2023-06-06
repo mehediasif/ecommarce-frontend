@@ -2,7 +2,11 @@ import { mongooseConnect } from "@/lib/mongoose";
 import { Order } from "@/models/Order";
 import { Product } from "@/models/Product";
 
+//importing Stripe info
+const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SK);
+
 export default async function handler(req, res) {
+
     if( req.method !== 'POST'){
         res.json('Should be a POST request!');
         return;
@@ -11,13 +15,13 @@ export default async function handler(req, res) {
     const {
         name,email,city,postalCode,
         firstAddressLine,secondAddressLine,
-        country,products,
+        country,cartItems,
     } = req.body;
 
     //connecting to the Database
     await mongooseConnect();
     
-    const productsIds = products.split(',');
+    const productsIds = cartItems;
     const uniqueIds = [...new Set(productsIds)];
 
     //extracting Specific Product Information from Product Model
@@ -31,19 +35,32 @@ export default async function handler(req, res) {
         if(quantity > 0 && productInfo){
             line_items.push({
                 quantity,
-                priceData: {
+                price_data: {
                     currency: 'USD',
                     product_data: {name : productInfo.title},
-                    unit_amount: quantity * productInfo.price,
+                    unit_amount: quantity * productInfo.price * 100,
                 }
             })
         }
     }
-    res.json({line_items});
-    
+    //res.json({line_items});
+
     const orderDoc = await Order.create({
         line_items,name,email,city,postalCode,
         firstAddressLine,secondAddressLine,
         country,paid:false,
+    })
+
+    const session = await stripe.checkout.sessions.create({
+        line_items,
+        mode: 'payment',
+        customer_email: email,
+        success_url: process.env.NEXT_PUBLIC_PUBLIC_URL + '/cart?success=1',
+        cancel_url: process.env.NEXT_PUBLIC_PUBLIC_URL + '/cart?cancel=1',
+        metadata: {orderID: orderDoc._id.toString()},
+    });
+
+    res.json({
+        url:session.url,
     })
   }

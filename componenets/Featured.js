@@ -13,15 +13,21 @@ const Bg = styled.div`
 `;
 
 const Title = styled.h1`
-    margin:0;
-    font-family: 'Satisfy', cursive;
+    margin: 5px;
+    font-family: 'Syne Mono', monospace;
     font-weight: normal;
-    font-size: 3.5rem;
+    font-size: 2.5rem;
+    background: linear-gradient(to right, rgb(20, 244, 146), rgb(51, 139, 277));
+    background-size: cover;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 `;
 
 const Description = styled.p`
-    color: #ee664d;
-    font-family: 'Cinzel', serif;
+    margin:10px;
+    color: #afafaf;
+    font-family: 'Roboto', sans-serif;
 
 `;
 

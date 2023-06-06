@@ -7,10 +7,17 @@ import Input from "@/componenets/Input";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import styled, {css} from "styled-components";
+import { usePathname } from 'next/navigation';
 
 const ColumnsWrapper = styled.div`
     display: grid;
     grid-template-columns: 1.3fr 0.7fr;
+    gap: 30px;
+    margin: 20px 0 20px;
+`;
+const ColumnsWrapper1 = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 30px;
     margin: 20px 0 20px;
 `;
@@ -20,6 +27,8 @@ const Box = styled.div`
     padding: 20px 20px;
     border-radius: 20px;
     box-shadow: 5px 1px 1px #fef5fF;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
 `;
 
 const TitleStyle = css`
@@ -37,6 +46,12 @@ const TitleStyle = css`
         background-color: #e7e9e7;
         border: 1px dashed;
         border-radius: 10px;
+    `}
+    ${props => props.green && css`
+        color: #000;
+        background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 177));
+        border: 1px dashed;
+        border-radius: 20px;
     `}
 `;
 const Title = styled.h3`
@@ -83,6 +98,7 @@ const CityHolder = styled.div`
     gap: 5px;
 `;
 
+
 export default function CartPage(){
     const {cartItems,addProduct,removeProduct} = useContext(CartContext);
     const [productInfo, setProductInfo] = useState([]);
@@ -93,6 +109,8 @@ export default function CartPage(){
     const [firstAddressLine, setFirstAddressLine] = useState('');
     const [secondAddressLine, setSecondAddressLine] = useState('');
     const [country, setCountry] = useState('');
+
+    const router = usePathname();
 
     useEffect(() => {
         if (cartItems.length > 0){
@@ -110,12 +128,54 @@ export default function CartPage(){
     function lessOfthisProduct(id) {
         removeProduct(id);
     }
+    async function goToPayment(){
+        const response = await axios.post('/api/checkout', {
+            name,email,city,postalCode,
+            firstAddressLine,secondAddressLine,
+            country,cartItems,
+        })
+        if (response.data.url) {
+            window.location = response.data.url
+        }
+    }
 
     //Function to calculate Total Price on Shopping Cart
     let total = 0;
     for(const productID of cartItems) {
         const price = productInfo.find(p => p._id === productID)?.price || 0;
-        total += price;
+        total = total + price;
+    }
+
+    if (router.includes('success')) {
+        return(
+            <>
+                <Header />
+                <Center>
+                    <ColumnsWrapper1>
+                    <Box>
+                        <Title>Thanks For your Purchase</Title>
+                        <Title green>We will sent the confirmation by email</Title>
+                    </Box>
+
+                    <Box>
+                        
+                        <p>Subscribe to our newsletter for exciting offers</p>
+                        <Input type={"email"} placeholder="Send me discounts"/>
+                        <Primarybtn primary>Send</Primarybtn>
+                    </Box>
+                    { //This feedback box needs word in future 
+                    }
+                    <Box>
+                        <Title>How was the experience?</Title>
+                        <label for="Feedback">How can WE Improve?</label>
+                        <Input type={"text"} placeholder="Suggestions"/>
+                    </Box>
+                        
+                    </ColumnsWrapper1>
+                    
+                </Center>
+            </>
+        );
     }
     return(
         <>
@@ -185,7 +245,6 @@ export default function CartPage(){
                 {!!cartItems?.length && (
                     <Box>
                         <Title>Order Information</Title>
-                        <form method="post" action="/api/checkout">
                             <Input 
                             type={"text"} 
                             placeholder="Name"
@@ -242,9 +301,7 @@ export default function CartPage(){
                             value={country}
                             onChange={ev => setCountry(ev.target.value)} 
                             />
-                            <input type={"hidden"} name={"products"} value={cartItems.join(',')} />
-                            <Primarybtn black outline size={'l'} block type="submit">Continue to payment</Primarybtn>
-                        </form>
+                            <Primarybtn black outline size={'l'} block onClick={goToPayment}>Continue to payment</Primarybtn>
                     </Box>
                 )}
             </ColumnsWrapper>
