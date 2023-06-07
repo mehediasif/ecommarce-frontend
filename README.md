@@ -1,6 +1,29 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## E Commarce Front part
+#### This is a note for myself how to run this project
+
+Step 1: Open This Repository Along With admin Repository in a VS code Shared workspace
+        and Run on both terminal
+    ```bash
+    pnpm run dev
+    ```
+Step 2: Open MongoDB Compass and Connect to my MongoDB Atlas Cluster with my URI with password
+Step 3: Go to >> C:\Program Files (x86)\Stripe
+    and Run
+    ```
+    stripe.exe
+    ```
+Step 4: Need to Check Stripe status to Confirm if webhook is working for localhost
+    Run
+    ```
+    stripe status
+    ```
+Step-5: As Stripe CLI is running on Local Environment to check the Webhook this command
+    
+    ```bash
+    stripe listen --forward-to localhost:3001/api/webhook
+    ```
 
 ## Getting Started
 
