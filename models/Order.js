@@ -10,6 +10,8 @@ const OrderSchema = new Schema({
     secondAddressLine: {type:String, required: true},
     country: {type:String, required: true},
     paid: {type:Boolean},
+} ,{
+    timestamps: true,
 });
 
 export const Order = models?.Order || model('Order', OrderSchema);

@@ -1,13 +1,13 @@
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import styled, {css} from "styled-components";
 import { CartContext } from "@/componenets/CartContext";
 import Center from "@/componenets/Center";
 import Header from "@/componenets/Header";
 import Primarybtn from "@/componenets/Primarybtn";
 import Table from "@/componenets/Table";
 import Input from "@/componenets/Input";
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import styled, {css} from "styled-components";
-import { usePathname } from 'next/navigation';
+
 
 const ColumnsWrapper = styled.div`
     display: grid;
@@ -100,8 +100,10 @@ const CityHolder = styled.div`
 
 
 export default function CartPage(){
-    const {cartItems,addProduct,removeProduct} = useContext(CartContext);
+    const {cartItems,addProduct,removeProduct,clearCart} = useContext(CartContext);
     const [productInfo, setProductInfo] = useState([]);
+
+    //states for the Payment
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [city, setCity] = useState('');
@@ -110,7 +112,8 @@ export default function CartPage(){
     const [secondAddressLine, setSecondAddressLine] = useState('');
     const [country, setCountry] = useState('');
 
-    const router = usePathname();
+    const [isSuccess,setIsSuccess] = useState(false);
+
 
     useEffect(() => {
         if (cartItems.length > 0){
@@ -122,6 +125,17 @@ export default function CartPage(){
             setProductInfo([]);
         }
     }, [cartItems]);
+
+    useEffect(() => {
+        if( typeof window === 'undefined'){
+            return;
+        }
+        if (window?.location.href.includes('success')){
+            setIsSuccess(false);
+            clearCart();
+        }
+    }, []);
+
     function moreOfthisProduct(id){
         addProduct(id);
     }
@@ -129,13 +143,14 @@ export default function CartPage(){
         removeProduct(id);
     }
     async function goToPayment(){
+
         const response = await axios.post('/api/checkout', {
             name,email,city,postalCode,
             firstAddressLine,secondAddressLine,
             country,cartItems,
-        })
+        });
         if (response.data.url) {
-            window.location = response.data.url
+            window.location = response.data.url;
         }
     }
 
@@ -146,7 +161,8 @@ export default function CartPage(){
         total = total + price;
     }
 
-    if (router.includes('success')) {
+
+    if (isSuccess) {
         return(
             <>
                 <Header />
@@ -175,8 +191,9 @@ export default function CartPage(){
                     
                 </Center>
             </>
-        );
-    }
+        );}
+
+
     return(
         <>
         <Header />
@@ -186,7 +203,10 @@ export default function CartPage(){
                     <Title nobgdash >Cart Information</Title>
 
                     {!cartItems.length && (
+                        <Box>
                         <Title>Your Cart is Empty!</Title>
+                        <Title green>We will sent the confirmation by email</Title>
+                        </Box>
                     )}
 
                     {productInfo?.length > 0 && (
@@ -301,7 +321,7 @@ export default function CartPage(){
                             value={country}
                             onChange={ev => setCountry(ev.target.value)} 
                             />
-                            <Primarybtn black outline size={'l'} block onClick={goToPayment}>Continue to payment</Primarybtn>
+                            <Primarybtn black outline size={'l'} block onClick={goToPayment} >Continue to payment</Primarybtn>
                     </Box>
                 )}
             </ColumnsWrapper>

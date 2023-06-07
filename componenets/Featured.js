@@ -39,7 +39,7 @@ const ColumnsWrapper = styled.div`
         max-width: 100%;
         max-height: 100vh;
         object-fit: fill;
-        border-radius: 25% 10%;
+        border-radius: 15%;
     }
 `;
 const Column = styled.div`
@@ -80,7 +80,7 @@ export default function Featured({featuredProduct}){
                 </Column>
                 <Column>
                     <div>
-                    <img src="https://mehediasif-ecommarce-products.s3.amazonaws.com/1685851496628.webp" alt="" />
+                    <img src="https://mehediasif-ecommarce-products.s3.amazonaws.com/1685851496628.webp" alt="" loading="lazy"/>
                     </div>
                 </Column>
                 </ColumnsWrapper>

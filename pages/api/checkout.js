@@ -6,11 +6,15 @@ import { Product } from "@/models/Product";
 const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SK);
 
 export default async function handler(req, res) {
-
+    
+    
     if( req.method !== 'POST'){
         res.json('Should be a POST request!');
         return;
     }
+
+    //connecting to the Database
+    await mongooseConnect();
 
     const {
         name,email,city,postalCode,
@@ -18,8 +22,7 @@ export default async function handler(req, res) {
         country,cartItems,
     } = req.body;
 
-    //connecting to the Database
-    await mongooseConnect();
+    
     
     const productsIds = cartItems;
     const uniqueIds = [...new Set(productsIds)];
@@ -30,7 +33,7 @@ export default async function handler(req, res) {
     //prepping for Stripe Line array
     let line_items = [];
     for (const productID of uniqueIds) {
-        const productInfo = productInfos.find(p => p._id.toString() === productID);
+        const productInfo = productInfos.find(p => p._id.toString() === productID.toString());
         const quantity = productsIds.filter(id => id === productID)?.length || 0;
         if(quantity > 0 && productInfo){
             line_items.push({
